@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Giveaway</title>
+	<link rel="stylesheet" href="mobile.css" media="screen and (max-width:480px)"/>
+	<link rel="stylesheet" href="tablet.css" media="screen and (min-width:481px) and (max-width:768px)"/>
+	<link rel="stylesheet" href="desktop.css" media="screen and (min-width:769px)"/>
+	<script type="text/javascript" src="tennisShop.js"></script>
+</head>
+
+<body>
+	<header>
+		<nav>
+			<a href="index.html"><img src="tennisBallLogo.png" alt="Tennis Ball Logo"></a>
+			<a href="deals.html">Deals</a>
+			<a href="racquets.html">Racquets</a>
+			<a href="balls.html">Balls</a>
+			<a href="bags.html">Bags</a>
+			<a href="shoes.html">Shoes</a>
+			<a href="memoribilia.html">Autographed Memorabilia</a>
+			<a href="giveAway.html">Giveaway</a>
+			<a href="inventory.html">Store Inventory</a>
+			<a href="checkout.html"><img src="shoppingCart.png" alt="Shopping Cart Logo"></a>
+		</nav>
+	</header>
+
+	<main>
+		<div class="center">
+			<h1>Giveaway</h1>
+		</div>
+		
+		<article>
+			<section>
+				<h3>Fill out the survey below for a chance to win one of these items</h3>
+				<div class="grid-container-half">
+					<figure>
+						<img src="trophy.jpeg" alt="Trophy Replica" />
+						<figcaption><small>Wimbledon Trophy Replica</small></figcaption>
+					</figure>
+					<figure>
+						<img src="bagGiveaway.jpeg" alt="Bag Giveaway" />
+						<figcaption><small>Babolat Pure Aero Rafa Signed Bag</small></figcaption>
+					</figure>
+				</div>
+
+				<h3>Survey:</h3>
+				<form name="giveawayForm" method="get" id="giveawayForm">
+					<div class="form-grid">
+						<label for="cardNum">First Name:</label>
+						<input type="text" id="fnameGiveaway" name="fnameGiveaway">
+
+						<label for="expire">Last Name:</label>
+						<input type="text" id="lnameGiveaway" name="lnameGiveaway">
+
+						<label for="payment">Item of Choice:</label>
+						<select name="choiceItem" id="choiceItem">
+							<option value="trophy">Wimbledon Trophy Replica</option>
+							<option value="babolatSignedBag">Babolat Pure Aero Rafa Signed Bag</option>
+						</select>
+
+						<label for="code">Why do you want this item:</label>
+						<input type="text" id="reason" name="reason">
+					</div>
+					
+					<br><br>
+					<input class="fancy-button" id="submitGiveaway" type="submit" value="Submit">
+					<input class="fancy-button" type="reset" value="Clear Form">
+				</form>
+				<p id="giveawayJSON"></p>
+			</section>
+		</article>
+		
+	</main>
+
+	<footer>
+		<br>
+		<nav>
+			<a href="index.html"><img src="tennisBallLogo.png" alt="Tennis Ball Logo"></a>
+			<a href="deals.html">Deals</a>
+			<a href="racquets.html">Racquets</a>
+			<a href="balls.html">Balls</a>
+			<a href="bags.html">Bags</a>
+			<a href="shoes.html">Shoes</a>
+			<a href="memoribilia.html">Autographed Memorabilia</a>
+			<a href="giveAway.html">Giveaway</a>
+			<a href="inventory.html">Store Inventory</a>
+			<a href="checkout.html"><img src="shoppingCart.png" alt="Shopping Cart Logo"></a>
+		</nav>
+	</footer>
+	
+</body>
+</html>

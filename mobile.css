@@ -1,0 +1,171 @@
+/*
+  CSS layout for a mobile phone. This layout will make different margins smaller compared to a tablet.
+	There will also be other elements that will be adjusted to fit on a mobile screen
+	We also kept many things similar or the same to keep consistancy
+*/
+
+body {
+	background-color: lightgray;
+}
+
+.center {
+	text-align: center;
+}
+
+.plane-background {
+	background-color: white;
+}
+
+nav {
+	text-align: center;
+
+	/* smaller border compared to a tablet */
+	border: 2px solid black;
+	background-color: white;
+}
+
+nav > a{
+	/* smaller margin compared to a tablet */
+	margin-right: 8px;
+	vertical-align: middle;
+
+	/* transition for when you are going to hover over an anchor element in nav */
+	transition-property: background-color;
+	transition-duration: 1.0s;
+	transition-timing-function: ease-out;
+	transition-delay: 0s;
+}
+
+a:hover {
+	background-color: magenta;
+}
+
+figure {
+	/* smaller border than a tablet */
+	border: 3px solid darkgray;
+	align-items: center;
+	width: 150px;
+}
+
+/* 
+  Will target the main images on the page (images that are within a figure element)
+	This will make the resolution of the images smaller to better fit the size of the screen.
+	We made this image resolution smaller than the tablet to fit the mobile screen
+*/
+figure > img {
+	width: 150px;
+	height: 150px;
+}
+
+/* 
+  layout using grid. This grid will get us rows that contain 1 column instead of 2.
+	This way the elements in the grid can morph to the smaller page.
+*/
+.grid-container {
+  display: grid;
+  grid-template-columns: auto;
+	text-align: center;
+	/* make the gap smaller between rows compared to a tablet */
+	grid-row-gap: 5px;
+}
+
+/* grid container for rows that have two columns */
+.grid-container-half {
+  display: grid;
+  grid-template-columns: auto auto;
+	text-align: center;
+	grid-row-gap: 10px;
+	column-gap: 10px;
+}
+
+/* targets any figure tag that is used in the grid container */
+.grid-container > figure{
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	margin: auto;
+	background-color: aqua;
+}
+
+.grid-container-half > figure{
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	margin: auto;
+	background-color: aqua;
+}
+
+figure > button {
+	width: 100%;
+}
+
+/* Ball back and forth animation */
+.animation {
+	width: 25px;
+	height: 25px;
+	background-image: url(ball.png);
+	background-color: white;
+	position: relative;
+	animation-name: back-and-forth;
+	animation-duration: 5s;
+	animation-iteration-count: infinite	;
+	animation-timing-function: ease-out;
+}
+
+/* makes the tennis ball go to the right hand side of the screen
+half way through the animation, then return to the left side */
+@keyframes back-and-forth {
+	0% {left: 0%;}
+	50% {left: 90%;}
+	100% {left: 0%;}
+}
+
+/* css to target the table element to have a solid border */
+table, th, td {
+  border: 1px solid;
+	padding: 3px;
+	text-align: center;
+}
+
+/* 
+  grid for input and label in a form. This way we can have multiple elements of the form side by side
+  Here we changed the form for the mobile version. We will now have one label on a line, and the input
+	on the next line. This way when the width is compressed, everything will still display nicely.
+*/
+.form-grid {
+  display: grid;
+  grid-template-columns: 70%;
+	grid-row-gap: 8px;
+}
+
+/* grid to split the screen on the checkout page */
+/* This way we can get the items the user has displayed next to their billing form */
+.split-grid {
+	display: grid;
+	grid-template-columns: 70% 30%;
+}
+
+/* changed margin for table compared to tablet */
+table {
+	margin-top: 275px;
+}
+
+.fancy-button {
+	margin: 4px;
+	padding: 5px;
+	color: white;
+	width: 100px;
+	cursor: pointer;
+	border-radius: 2px;
+	background-color: darkblue;
+}
+
+.fancy-button-double {
+	margin: 4px;
+	padding: 5px;
+	color: white;
+	width: 211px;
+	cursor: pointer;
+	border-radius: 2px;
+	background-color: darkblue;
+}
