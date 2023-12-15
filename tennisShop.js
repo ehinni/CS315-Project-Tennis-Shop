@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				// rebuild query string
 				while (itemIndex < itemArr.length) {
 					if (localStorage.getItem("queryString") === '') {
-						url = updateQueryStringParameter(window.location.href.slice(0,-1) , 'item' + (itemIndex + 1), normalizeQueryString(itemArr[itemIndex]));
+						url = updateQueryStringParameter(window.location.href , 'item' + (itemIndex + 1), normalizeQueryString(itemArr[itemIndex]));
 					}
 					else {
 						url = updateQueryStringParameter(window.location.href, 'item' + (itemIndex + 1), normalizeQueryString(itemArr[itemIndex]));
