@@ -1,5 +1,6 @@
 // make sure dom has loaded before anything else
 document.addEventListener('DOMContentLoaded', () => {
+	const MISSOURI_TAX = 0.04225;
 	
 	// gets JSON from local storage when page loads
 	const json = localStorage.getItem("JSON");
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	if (json) {
 		document.getElementById("textJSON").innerHTML = json;
 	}
+	
 
 	// do the same for the giveaway form json
 	const giveawayJson = localStorage.getItem("giveawayJSON");
@@ -21,6 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
 			// remove items and prices from the cart thats stored in local storage
 			localStorage.setItem("items", []);
 			localStorage.setItem("prices", []);
+
+			// reset query string
+			localStorage.setItem("queryString", '');
+
+			// update and push url
+			url = window.location.href.split('?')[0] + '?';
+			window.history.pushState(null, null, url)
 			// refresh page so cart updates
 			location.reload();
 		});
@@ -49,12 +58,27 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (localStorage.getItem("prices")) {
 					priceArr = localStorage.getItem("prices").split(",");
 				}
-		
-		
+
+				
 				// add item and price to their respective arrays
 				itemArr = [...itemArr, myArray[0]];
 				priceArr = [...priceArr, myArray[1]];
-		
+				
+				// get the url with the current query string in it
+				let url = '';
+				if (localStorage.getItem("queryString") === '') {
+					url = updateQueryStringParameter(window.location.href.slice(0,-1) , 'item' + itemArr.length, normalizeQueryString(myArray[0]));
+
+				}
+				else {
+					url = updateQueryStringParameter(window.location.href, 'item' + itemArr.length, normalizeQueryString(myArray[0]));
+				}
+
+				// update url immediately
+				window.history.pushState(null, null, url)
+				// set local storage query string to be just what's after the '?'
+				localStorage.setItem("queryString", url.split('?')[1]);
+
 				// store items and prices into local storage to preserve across refreshes 
 				localStorage.setItem("items", itemArr);
 				localStorage.setItem("prices", priceArr);
@@ -85,11 +109,36 @@ document.addEventListener('DOMContentLoaded', () => {
 				// remove items and prices from the cart table since it's now empty
 				localStorage.setItem("items", []);
 				localStorage.setItem("prices", []);
+				// clear query string
+				localStorage.setItem("queryString", '');
 			}
-			else {
-				// User didn't enter proper data. Stop form submission
-				event.preventDefault();
-			}
+	
+			// enable the button back after
+			submitButton.disabled = false;
+		});
+	}
+
+	const loginForm = document.getElementById("loginForm");
+	if (loginForm) {
+		loginForm.addEventListener("submit", (event) => {
+			// get the submitButton and disable it to prevent form getting submitted many times
+			const submitButton = document.getElementById("submitLogin");
+			submitButton.disabled = true;
+			validateLoginForm(); // validate the form
+	
+			// enable the button back after
+			submitButton.disabled = false;
+		});
+	}
+
+	const signupForm = document.getElementById("signupForm");
+	if (signupForm) {
+		signupForm.addEventListener("submit", (event) => {
+			// get the submitButton and disable it to prevent form getting submitted many times
+			const submitButton = document.getElementById("submitSignup");
+			submitButton.disabled = true;
+
+			validateLoginForm() // validate the form
 	
 			// enable the button back after
 			submitButton.disabled = false;
@@ -113,17 +162,22 @@ document.addEventListener('DOMContentLoaded', () => {
 				// submitted the JSON in the local computer
 				localStorage.setItem("giveawayJSON", myJSON);
 			}
-			else {
-				// User didn't enter proper data. Stop form submission
-				event.preventDefault();
-			}
 	
 			// enable the button back after
 			submitButton.disabled = false;
 		});
 	}
 
+	// removes all spaces from string and replaces them with a -
+	// also makes everything lowercase. This way it works better with our database
+	function normalizeQueryString(str) {
+		str = str.trim();
+		str = str.replace('\'', '');
+		return str.replaceAll(' ', '-').toLowerCase();
+	}
+
 	function validateForm(formInfo) {
+
 		// values of what is in the form
 		const formValues = [
 			"payment", "cardNum", "expire", "code", "fname", "lname", "city",
@@ -180,6 +234,24 @@ document.addEventListener('DOMContentLoaded', () => {
 		return true;
 	}
 
+	function validateLoginForm() {
+		const formValues = ["usernameLogin", "passwordLogin"];
+		// this form will only be invalid if a field is empty
+		for (let index = 0; index < formValues.length; index++) {
+			// get the value of everything in the form
+			let fieldValue = document.querySelector("#" + formValues[index]).value;
+
+			// if the value is empty, we want to stop the submission and alert the user
+			if (fieldValue == null || fieldValue == "") {
+				// the field was empty, alert the user
+				window.alert("Part of the form is empty. Please try again");
+				return false;
+			}
+		}
+		return true;
+
+	}
+
 	function validateGiveawayForm(formInfo) {
 		const formValues = ["fnameGiveaway", "lnameGiveaway", "choiceItem", "reason"];
 
@@ -214,22 +286,39 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	// start of the creation of the table that displays the item and the price
-	orderTable = "<tr> <th>Item</th> <th>Cost ($)</th> </tr>"
+	orderTable = "<tr> <th>Item</th> <th>Cost ($)</th> <th></th> </tr>"
 
 	// keep track of total
 	let total = 0
 	for (let i = 0; i < localStorage.getItem("prices").split(",").length; i++) {
 		// for every item, add on the name and price
     orderTable+="<tr>";
-		// note that localStorage.getItem("prices").split(",") is the saved array of prices. Same with items array
-    orderTable+="<th>"+localStorage.getItem("items").split(",")[i]+"</th>";
-    orderTable+="<th>"+localStorage.getItem("prices").split(",")[i]+"</th>";
+
+		// make sure there is actually an item
+		if (localStorage.getItem("items").split(",")[i] !== "") {
+			// note that localStorage.getItem("prices").split(",") is the saved array of prices. Same with items array
+			let item = localStorage.getItem("items").split(",")[i];
+			let price = localStorage.getItem("prices").split(",")[i]
+			orderTable+="<th>"+item+"</th>";
+			orderTable+="<th>"+price+"</th>";
+	
+			// add an option to remove from cart
+			let order = item + "|" + price;
+
+			orderTable +="<th><button class='removeFromCartButton' name='"+order+"'>Remove</button></th>"
+		}
+
     orderTable+="</tr>";
 		// add on to total (the + before the expression converts the string to an int)
 		total += +localStorage.getItem("prices").split(",")[i];
 	}
+	// add on a tax row
+	const tax = Math.round(total * MISSOURI_TAX * 100) / 100; // multiplying and dividing by 100 will get it to the nearest 2 decimals
+	total += tax;
+	orderTable += "<tr> <th>Tax</th> <th>"+tax+"</th> <th></th> </tr>"
 	// add on a total row
-	orderTable += "<tr> <th>Total</th> <th>"+total+"</th> </tr>"
+	orderTable += "<tr> <th>Total</th> <th>"+total +"</th> <th></th> </tr>"
+
 
 	if (document.getElementById("orderTable")) {
 		document.getElementById("orderTable").innerHTML = orderTable;
@@ -298,5 +387,97 @@ document.addEventListener('DOMContentLoaded', () => {
 		// last thing to check is if the phone number length with the -'s is 12
 		return phoneNumber.length === 12;
 	}
+
+	// adds to the query string in the url bar
+	// taken from stack overflow
+	function updateQueryStringParameter(uri, key, value) {
+		var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+		var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+		if (uri.match(re)) {
+			return uri.replace(re, '$1' + key + "=" + value + '$2');
+		}
+		else {
+			return uri + separator + key + "=" + value;
+		}
+	}
+
+
+	const removeFromCartBtns = document.getElementsByClassName("removeFromCartButton");
+	if (removeFromCartBtns) {
+		Array.from(removeFromCartBtns).forEach((removeFromCartBtn) => {
+			removeFromCartBtn.addEventListener('click', (event) => {
+
+				// get items and price array
+				if (localStorage.getItem("items")) {
+					itemArr = localStorage.getItem("items").split(",");
+				}
+				if (localStorage.getItem("prices")) {
+					priceArr = localStorage.getItem("prices").split(",");
+				}
+
+				// get the item and put it in a remove array
+				let removePriceString = event.target.name;
+				let removeArray = removePriceString.split("|");
+				
+				// remove from itemArr and priceArr
+				let removeIndex = 0;
+				let found = false;
+				while (!found) {
+					if (itemArr[removeIndex] === removeArray[0]) {
+						// remove item
+						itemArr.splice(removeIndex, 1);
+						found = true;
+					}
+					if (priceArr[removeIndex] === removeArray[1]) {
+						// remove price
+						priceArr.splice(removeIndex, 1);
+						found = true;
+					}
+					removeIndex++;
+				}
+				
+				// remove from local storage
+				localStorage.setItem("items", itemArr);
+				localStorage.setItem("prices", priceArr);
 	
+				// change url to remove the key and value that we removed from cart
+				let itemIndex = 0
+
+				// we are going to do this by rebuilding the query string
+				url = window.location.href.split('?')[0] + '?';
+				localStorage.setItem("queryString", '');
+				window.history.pushState(null, null, url);
+
+				// rebuild query string
+				while (itemIndex < itemArr.length) {
+					if (localStorage.getItem("queryString") === '') {
+						url = updateQueryStringParameter(window.location.href.slice(0,-1) , 'item' + (itemIndex + 1), normalizeQueryString(itemArr[itemIndex]));
+					}
+					else {
+						url = updateQueryStringParameter(window.location.href, 'item' + (itemIndex + 1), normalizeQueryString(itemArr[itemIndex]));
+					}
+					// update url before we loop again
+					window.history.pushState(null, null, url)
+					itemIndex++;
+				}
+	
+				// update url immediately
+				window.history.pushState(null, null, url)
+				// set local storage query string to be just what's after the '?'
+				if (url.split('?')[1]) {
+					localStorage.setItem("queryString", url.split('?')[1]);
+				}
+				location.reload();
+	
+			});
+
+		});
+	}
+	
+
+	window.addEventListener("load", (event) => {
+		// when page loads, change url to have current query string
+		history.replaceState(null, null, "?" + localStorage.getItem("queryString").toString());
+	});
+
 });

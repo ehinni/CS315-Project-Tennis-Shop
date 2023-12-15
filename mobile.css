@@ -12,6 +12,10 @@ body {
 	text-align: center;
 }
 
+.error {
+	color: red;
+}
+
 .plane-background {
 	background-color: white;
 }
@@ -168,4 +172,12 @@ table {
 	cursor: pointer;
 	border-radius: 2px;
 	background-color: darkblue;
+}
+
+.login-box {
+	border: 5px solid black; 
+	text-align: center;
+	margin-top: 40px;
+	margin-left: 33%;
+	width: 300px;
 }

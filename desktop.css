@@ -8,6 +8,9 @@ body {
 	text-align: center;
 }
 
+.error {
+	color: red;
+}
 
 .plane-background {
 	background-color: white;
@@ -117,7 +120,7 @@ table, th, td {
 /* grid for input and label in a form. This way we can have multiple elements of the form side by side */
 .form-grid {
 	display: grid;
-  grid-template-columns: 17.5% 17.5% 17.5% 17.5%;
+  grid-template-columns: 11.6% 11.6% 11.6% 11.6% 11.6% 11.6%;
 	grid-row-gap: 10px;
 	column-gap: 10px;
 }
@@ -170,4 +173,12 @@ table {
 		grid-row-gap: 10px;
 		column-gap: 10px;
 	}
+}
+
+.login-box {
+	border: 5px solid black; 
+	text-align: center;
+	margin-top: 50px;
+	margin-left: 33%;
+	width: 400px;
 }
